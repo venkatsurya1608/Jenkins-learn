@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Deploy') { 
             steps {
-                sh 'echo this is EVN'
+                sh 'echo this is production'
             }
         }
     }
