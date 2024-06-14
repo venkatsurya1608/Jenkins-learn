@@ -3,36 +3,71 @@ pipeline {
         label 'AGENT-1'
     }
     options {
-        timeout(time: 1, unit: 'SECONDS')
+        timeout(time: 30, unit: 'MINUTES')
         disableConcurrentBuilds()
+        ansiColor('xterm')
     }
-    // environment { 
-    //     Deploy_To = 'dev'
-    // }    
+    parameters {
+        choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
+    }
     stages {
-        stage('plan') { 
+        stage('Init') {
             steps {
+               sh """
+                cd 01-vpc
+                terraform init -reconfigure
+               """
+            }
+        }
+        stage('Plan') {
+            when {
+                expression{
+                    params.action == 'Apply'
+                }
+            }
+            steps {
+                sh """
+                cd 01-vpc
+                terraform plan
                 """
-                ls -ltr
+            }
+        }
+        stage('Deploy') {
+            when {
+                expression{
+                    params.action == 'Apply'
+                }
+            }
+            input {
+                message "Should we continue?"
+                ok "Yes, we should."
+            }
+            steps {
+                sh """
+                cd 01-vpc
+                terraform apply -auto-approve
+                """
+            }
+        }
 
+        stage('Destroy') {
+            when {
+                expression{
+                    params.action == 'Destroy'
+                }
+            }
+            steps {
+                sh """
+                cd 01-vpc
+                terraform destroy -auto-approve
                 """
-            }
-        }
-        stage('apply') { 
-            steps {
-                sh 'echo this venkat-test' 
-            }
-        }
-        stage('Deploy') { 
-            steps {
-                sh 'echo this is production'
             }
         }
     }
-
     post { 
         always { 
             echo 'I will always say Hello again!'
+            deleteDir()
         }
         success { 
             echo 'I will run when pipeline is success'
@@ -42,4 +77,3 @@ pipeline {
         }
     }
 }
-
