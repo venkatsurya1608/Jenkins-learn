@@ -28,7 +28,7 @@ pipeline {
                 sh 'echo This is Deploy'
             }
         }
-        
+    }    
     post { 
         always { 
             echo 'I will always say Hello again!'
