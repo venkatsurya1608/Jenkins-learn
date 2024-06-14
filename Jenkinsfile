@@ -21,7 +21,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'echo This is build'
-                sh 'env'
+                sh 'PROD'
             }
         }
         stage('Test') {
