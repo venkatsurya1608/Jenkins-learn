@@ -13,7 +13,8 @@ pipeline {
         stage('plan') { 
             steps {
                 """
-                ls -la
+                ls -ltr
+
                 """
             }
         }
