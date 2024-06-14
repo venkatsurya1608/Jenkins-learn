@@ -6,16 +6,18 @@ pipeline {
         timeout(time: 1, unit: 'SECONDS')
         disableConcurrentBuilds()
     }
-    environment { 
-        Deploy_To = 'dev'
-    }    
+    // environment { 
+    //     Deploy_To = 'dev'
+    // }    
     stages {
-        stage('Build') { 
+        stage('plan') { 
             steps {
-                sh 'echo this venkat-build' 
+                """
+                ls -la
+                """
             }
         }
-        stage('Test') { 
+        stage('apply') { 
             steps {
                 sh 'echo this venkat-test' 
             }
